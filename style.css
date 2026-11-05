@@ -79,3 +79,8 @@ body {
     color: #6b6b8a;
 }
 
+.badge--promo { 
+    background-color: #8e44ad; 
+    margin-left: 4px;
+}
+
