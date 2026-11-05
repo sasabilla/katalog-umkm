@@ -4,7 +4,9 @@ declare(strict_types=1);
 require __DIR__ . "/data.php";
 require __DIR__ . "/functions.php";
 
-$daftarKategori = ["Semua", "Makanan", "Minuman", "Fashion"];
+// Tantangan 1: Tambahkan kategori "Kerajinan" di $daftarKategori
+$daftarKategori = ["Semua", "Makanan", "Minuman", "Fashion", "Kerajinan"];
+
 $kategoriDipilih = $_GET["kategori"] ?? "Semua";
 
 if (!in_array($kategoriDipilih, $daftarKategori, true)) {
@@ -33,7 +35,8 @@ $nilaiStok = hitungNilaiStok($daftarProduk);
         </p>
         <nav class="filter">
             <?php foreach ($daftarKategori as $kategori): ?>
-                <a href="?kategori=<?= urlencode($kategori) ?>" class="<?= $kategori === $kategoriDipilih ? 'aktif' : '' ?>">
+                <a href="?kategori=<?= urlencode($kategori) ?>" 
+                   class="<?= $kategori === $kategoriDipilih ? 'aktif' : '' ?>">
                     <?= e($kategori) ?>
                 </a>
             <?php endforeach; ?>
@@ -46,11 +49,21 @@ $nilaiStok = hitungNilaiStok($daftarProduk);
         <?php endif; ?>
 
         <?php foreach ($produkTampil as $produk): ?>
-            <?php $status = statusStok($produk["stok"]); ?>
+            <?php 
+                $status = statusStok($produk["stok"]); 
+                $promo = labelPromo($produk["harga"]); // Tantangan 3
+            ?>
             <article class="kartu">
                 <span class="<?= kelasBadge($status) ?>"><?= $status ?></span>
+                
+                <?php if ($promo !== ""): ?>
+                    <!-- Tantangan 3: Tampilkan label promo jika tidak kosong -->
+                    <span class="badge badge--promo"><?= e($promo) ?></span>
+                <?php endif; ?>
+
+                <!-- Tantangan 2: Nama produk tetap dibungkus e() demi keamanan XSS -->
                 <h2><?= e($produk["nama"]) ?></h2>
-                <p class="kategori"><?= e($produk["kategori"]) ?> (<?= e($produk["kode"]) ?>)</p>
+                <p class="kategori"><?= e($produk["kategori"]) ?> | <?= e($produk["kode"]) ?></p>
                 <p class="harga"><?= formatRupiah($produk["harga"]) ?></p>
                 <p class="stok">Stok: <?= $produk["stok"] ?></p>
             </article>
